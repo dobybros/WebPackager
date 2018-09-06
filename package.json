@@ -1,0 +1,26 @@
+{
+  "name": "build-resources",
+  "version": "1.0.0",
+  "description": "",
+  "main": "build_conf.js",
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "del": "^3.0.0",
+    "gulp": "^3.9.1",
+    "gulp-cheerio": "^0.6.3",
+    "gulp-concat": "^2.6.1",
+    "gulp-dom-src": "^0.2.0",
+    "gulp-each": "^0.5.0",
+    "gulp-uglify-es": "^1.0.4",
+    "ora": "^3.0.0",
+    "webpack": "^4.17.2"
+  },
+  "devDependencies": {
+    "gulp-uglify": "^3.0.1"
+  },
+  "scripts": {
+    "build": "node mix_all_js.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
