@@ -34,7 +34,7 @@ del(distPath, {force: true}).then(() => {
   throw error
 })
 
-
+let compressedJs = []
 htmls.forEach((htmlPath) => {
 // let htmlPath = htmls[1]
   let fileName = path.basename(htmlPath, '.html')
@@ -54,7 +54,6 @@ htmls.forEach((htmlPath) => {
         .pipe(uglify())
         .on('error', function (err) { redConsole(err) })
         .pipe(gulp.dest(dest))
-
       // Replace bundled js into html.
       yellowConsole(`Generating ${path.basename(htmlPath)} to ${dest}`)
       gulp.src(path.join(conf.root, htmlPath))
@@ -65,8 +64,9 @@ htmls.forEach((htmlPath) => {
           generate(null, content.replace(regexp, replacedStr))
         }))
         .pipe(cheerio(function($, file) {
+          let jsPath = `/${path.relative(conf.root, file.base)}/${fileName}_min.js`
           let scripts = $('script[src]')
-          scripts.last().after(`<script src="${fileName}_min.js"></script>`)
+          scripts.last().after(`<script src="${jsPath}"></script>`)
           scripts.remove()
           // let styles = $('link[href]')
           // styles.remove()
@@ -90,6 +90,7 @@ htmls.forEach((htmlPath) => {
     }
   })
 })
+
 copied.forEach((copiedPath) => {
     gulp.task(copiedPath, function() {
       let dest = path.join(conf.target, path.dirname(copiedPath))
@@ -100,9 +101,14 @@ copied.forEach((copiedPath) => {
   }
 )
 
+// copy all static
+gulp.task('copyStatic', function() {
+  let dest = path.join(conf.target, conf.static)
+  gulp.src(path.join(conf.root, conf.static) + '**/*')
+    .pipe(gulp.dest(dest))
+})
+
 function main() {
-  for (let task in gulp.tasks) {
-    gulp.start(task)
-  }
+  gulp.start(Object.keys(gulp.tasks))
   greenConsole("Finishing ...")
 }

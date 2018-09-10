@@ -1,5 +1,6 @@
 module.exports = {
   root: "../src/main/",
   templetes: "resources/",
-  target: "../dist"
+  static: "static/",
+  target: "../dist",
 }
