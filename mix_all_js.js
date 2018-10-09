@@ -14,6 +14,8 @@ const uglify = require('gulp-uglify-es').default;
 
 const htmls = htmlReader.htmls
 const copied = htmlReader.others
+const SRC = path.join(__dirname, conf.root)
+const timestamp = new Date().getTime()
 
 const yellowConsole = str => {
   console.log(chalk.yellow(str))
@@ -50,7 +52,7 @@ htmls.forEach((htmlPath) => {
         attribute: 'src',
         cwd: path.join(__dirname, conf.root)
       })
-        .pipe(concat(`${fileName}_min.js`))
+        .pipe(concat(`${fileName}_min_${timestamp}.js`))
         .pipe(uglify())
         .on('error', function (err) { redConsole(err) })
         .pipe(gulp.dest(dest))
@@ -64,7 +66,8 @@ htmls.forEach((htmlPath) => {
           generate(null, content.replace(regexp, replacedStr))
         }))
         .pipe(cheerio(function($, file) {
-          let jsPath = `/${path.relative(conf.root, file.base)}/${fileName}_min.js`
+          let jsPath = path.join(path.relative(SRC, file.base), `${fileName}_min_${timestamp}.js`)
+          jsPath =  '/' + jsPath.split(path.sep).join('/')
           let scripts = $('script[src]')
           scripts.last().after(`<script src="${jsPath}"></script>`)
           scripts.remove()
